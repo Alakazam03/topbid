@@ -91,7 +91,7 @@ export default {
       const key = url.searchParams.get("key");
       if (!key) return json({ error: "missing key" }, 400);
       const impressions = await getCount(env, "imp:" + key, memImpressions);
-      return json({ key, impressions, payouts: "coming_soon" });
+      return json({ key, impressions, payouts: "live" });
     }
 
     return json({ ok: true, service: "topbid" });

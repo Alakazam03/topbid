@@ -1,5 +1,5 @@
 ---
-name: kickbacks-setup
+name: topbid-setup
 description: Use when the user wants to install, set up, configure, or uninstall TopBid — the tool that renders a live link line in the Claude Code status bar. Triggers on phrases like "set up topbid", "install topbid", "status line links", "Claude Code link queue". Performs a privacy audit of the downloaded script BEFORE installing anything.
 ---
 
@@ -35,16 +35,16 @@ Ask the user to confirm they want to proceed. Do not continue without a yes.
 
 Download the files to a temp dir first — do NOT place them yet:
 
-    REPO_RAW="https://raw.githubusercontent.com/Alakazam03/kickbacks/main"
+    REPO_RAW="https://raw.githubusercontent.com/Alakazam03/topbid/main"
     tmp="$(mktemp -d)"
-    curl -fsSL "$REPO_RAW/kickbacks.sh" -o "$tmp/kickbacks.sh"
+    curl -fsSL "$REPO_RAW/topbid.sh" -o "$tmp/topbid.sh"
     curl -fsSL "$REPO_RAW/ads.json"     -o "$tmp/ads.json"
 
-Now READ `$tmp/kickbacks.sh` in full and verify, out loud to the user, that it:
+Now READ `$tmp/topbid.sh` in full and verify, out loud to the user, that it:
 
-1. Makes no outbound network call except to the ad endpoint in `KICKBACKS_ENDPOINT`,
+1. Makes no outbound network call except to the ad endpoint in `TOPBID_ENDPOINT`,
    and sends nothing in that call but the anonymous key.
-2. Reads and writes nothing outside `~/.kickbacks` (plus printing one line to stdout).
+2. Reads and writes nothing outside `~/.topbid` (plus printing one line to stdout).
 3. Contains no `eval` of remote content, no credential/file exfiltration, no obfuscation.
 
 Report what you found in plain language. **If the script does anything beyond the above,
@@ -53,10 +53,10 @@ the skill — a real check the user watches you perform, not a reassurance.
 
 ## Step 4 — Install (only after a clean audit)
 
-    mkdir -p "$HOME/.kickbacks"
-    cp "$tmp/kickbacks.sh" "$HOME/.kickbacks/kickbacks.sh"
-    cp "$tmp/ads.json"     "$HOME/.kickbacks/ads.json"
-    chmod +x "$HOME/.kickbacks/kickbacks.sh"
+    mkdir -p "$HOME/.topbid"
+    cp "$tmp/topbid.sh" "$HOME/.topbid/topbid.sh"
+    cp "$tmp/ads.json"  "$HOME/.topbid/ads.json"
+    chmod +x "$HOME/.topbid/topbid.sh"
 
 ## Step 5 — Configure the status line (NON-destructive)
 
@@ -64,9 +64,9 @@ Never overwrite `~/.claude/settings.json`. Back it up, then merge the one key wi
 only commit on success. Show the user exactly what changed.
 
     S="$HOME/.claude/settings.json"; mkdir -p "$HOME/.claude"
-    CMD="$HOME/.kickbacks/kickbacks.sh"
+    CMD="$HOME/.topbid/topbid.sh"
     if [ -f "$S" ]; then
-      cp "$S" "$S.kickbacks.bak"
+      cp "$S" "$S.topbid.bak"
       t="$(mktemp)"
       jq --arg cmd "$CMD" '.statusLine={type:"command",command:$cmd}' "$S" > "$t" \
         && mv "$t" "$S" || { rm -f "$t"; echo "settings.json unparseable — left untouched"; }
@@ -76,14 +76,14 @@ only commit on success. Show the user exactly what changed.
 
 ## Step 6 — Confirm
 
-- Test it the way Claude Code calls it: `echo '{}' | ~/.kickbacks/kickbacks.sh` — expect one
+- Test it the way Claude Code calls it: `echo '{}' | ~/.topbid/topbid.sh` — expect one
   styled line like `T$ Vaibhav Aggarwal · connect on LinkedIn · ad`.
 - Tell the user to restart Claude Code and accept the workspace-trust prompt (statusLine is
   shell-executing, so it needs the same trust as hooks).
-- Remind them: no `KICKBACKS_ENDPOINT` set = offline, nothing leaves the machine. To go live
+- Remind them: no `TOPBID_ENDPOINT` set = offline, nothing leaves the machine. To go live
   and start reading the live queue, they set that variable to the Worker endpoint.
 
 ## Uninstall
 
-If asked to remove it: restore `~/.claude/settings.json` from `.kickbacks.bak` (or delete the
-`statusLine` key with jq), and `rm -rf ~/.kickbacks`.
+If asked to remove it: restore `~/.claude/settings.json` from `.topbid.bak` (or delete the
+`statusLine` key with jq), and `rm -rf ~/.topbid`.

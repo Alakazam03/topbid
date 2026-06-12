@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# kickbacks.sh — Claude Code statusLine link renderer (dependency-free)
+# topbid.sh — Claude Code statusLine link renderer (dependency-free)
 # Prints exactly ONE line. ALWAYS exits 0. NEVER blocks the 300ms status-line tick.
 # Warm path is a plain `cat` of a cached line. The only parsing (node) runs either once
 # on the very first paint, or in a detached background refresh — never on a warm tick.
 
-KB_DIR="${KICKBACKS_DIR:-$HOME/.kickbacks}"
-ADS_FILE="${KICKBACKS_ADS:-$KB_DIR/ads.json}"
-ENDPOINT="${KICKBACKS_ENDPOINT:-}"          # empty = offline; nothing leaves the machine
-ENDPOINT_FILE="$KB_DIR/endpoint"
-CACHE_FILE="$KB_DIR/current_ad.txt"
-KEY_FILE="$KB_DIR/key"
+TB_DIR="${TOPBID_DIR:-$HOME/.topbid}"
+ADS_FILE="${TOPBID_ADS:-$TB_DIR/ads.json}"
+ENDPOINT="${TOPBID_ENDPOINT:-}"             # empty = offline; nothing leaves the machine
+ENDPOINT_FILE="$TB_DIR/endpoint"
+CACHE_FILE="$TB_DIR/current_ad.txt"
+KEY_FILE="$TB_DIR/key"
 REFRESH_SECS=30
 
-mkdir -p "$KB_DIR" 2>/dev/null
+mkdir -p "$TB_DIR" 2>/dev/null
 cat >/dev/null 2>&1                          # drain + discard the session JSON Claude Code pipes in
 
 if [ -z "$ENDPOINT" ] && [ -s "$ENDPOINT_FILE" ]; then

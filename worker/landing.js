@@ -186,7 +186,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
       <a class="hideable" href="#how">How it works</a>
       <a href="#earnings">Earnings</a>
       <a href="#featured">Get featured</a>
-      <a href="https://github.com/Alakazam03/kickbacks" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/Alakazam03/topbid" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </div>
 </header>
@@ -199,7 +199,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
     <p class="lede">Every second Claude thinks, the bottom of your status bar can be earning. TopBid runs it on the statusLine hook Anthropic supports, so an update never breaks it.</p>
 
     <div class="install">
-      <code id="cmd"><span class="tok">$</span> curl -fsSL https://raw.githubusercontent.com/Alakazam03/kickbacks/main/install.sh | bash</code>
+      <code id="cmd"><span class="tok">$</span> curl -fsSL https://raw.githubusercontent.com/Alakazam03/topbid/main/install.sh | bash</code>
       <button class="copy" id="copyBtn" aria-label="Copy install command">copy</button>
     </div>
     <p class="reqs">One command. Your settings are backed up first. Offline until you connect.</p>
@@ -222,7 +222,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
       </div>
     </div>
 
-    <p class="credit">Inspired by the original kickbacks by <a href="https://x.com/0xecall" target="_blank" rel="noopener">@0xecall</a>. I rebuilt the idea on Claude Code's supported statusLine hook so it survives updates and never patches the binary.</p>
+    <p class="credit">Inspired by the original status-line ad idea by <a href="https://x.com/0xecall" target="_blank" rel="noopener">@0xecall</a>. I rebuilt it on Claude Code's supported statusLine hook so it survives updates and never patches the binary.</p>
   </section>
 
   <section class="video-wrap">
@@ -254,7 +254,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
   <section id="earnings">
     <p class="kicker">your earnings</p>
     <h2>Track your points</h2>
-    <p class="lede" style="margin:0 0 22px;">Run <code style="font-family:var(--mono);background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--text);">cat ~/.kickbacks/key</code> and paste the key to see the impressions you've served. Points count toward live payouts.</p>
+    <p class="lede" style="margin:0 0 22px;">Run <code style="font-family:var(--mono);background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--text);">cat ~/.topbid/key</code> and paste the key to see the impressions you've served. Points count toward live payouts.</p>
     <div class="track">
       <input id="keyInput" class="keyfield" placeholder="paste your TopBid key" autocomplete="off" spellcheck="false" />
       <button class="btn primary" id="checkBtn" type="button">Check points</button>
@@ -278,20 +278,20 @@ export const LANDING_HTML = `<!DOCTYPE html>
       <div class="touch only">
         <div class="th">only</div>
         <ul>
-          <li><span class="g">✓</span> writes one script to <span style="font-family:var(--mono)">~/.kickbacks</span></li>
+          <li><span class="g">✓</span> writes one script to <span style="font-family:var(--mono)">~/.topbid</span></li>
           <li><span class="g">✓</span> adds a statusLine key, backing up your settings first</li>
           <li><span class="g">✓</span> sends one anonymous key, just to count impressions</li>
           <li><span class="g">✓</span> stays fully offline with no endpoint set</li>
         </ul>
       </div>
     </div>
-    <p class="reqs" style="margin-top:16px;">Rather watch it install? Drop <span style="font-family:var(--mono);color:var(--muted)">skills/kickbacks-setup</span> into <span style="font-family:var(--mono);color:var(--muted)">~/.claude/skills</span> and tell Claude Code "set up TopBid" — it reads the script back to you before touching anything.</p>
+    <p class="reqs" style="margin-top:16px;">Rather watch it install? Drop <span style="font-family:var(--mono);color:var(--muted)">skills/topbid-setup</span> into <span style="font-family:var(--mono);color:var(--muted)">~/.claude/skills</span> and tell Claude Code "set up TopBid" — it reads the script back to you before touching anything.</p>
   </section>
 
   <section id="how">
     <p class="kicker">how it works</p>
     <div class="steps">
-      <div class="step"><span class="n">01</span><div><h3>Install the renderer</h3><p>One script lands in <code>~/.kickbacks</code> and adds a statusLine to your settings. Your old settings are backed up first.</p></div></div>
+      <div class="step"><span class="n">01</span><div><h3>Install the renderer</h3><p>One script lands in <code>~/.topbid</code> and adds a statusLine to your settings. Your old settings are backed up first.</p></div></div>
       <div class="step"><span class="n">02</span><div><h3>It reads the live list</h3><p>The status line pulls the current link, caches it, and refreshes in the background without ever blocking Claude Code.</p></div></div>
       <div class="step"><span class="n">03</span><div><h3>Featured links rotate</h3><p>The list is small and hand-picked. Terminals cycle through it as they refresh.</p></div></div>
     </div>
@@ -314,7 +314,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
 <footer>
   <div class="wrap foot">
     <span>Open source. Earn points now — payouts are live.</span>
-    <a href="https://github.com/Alakazam03/kickbacks" target="_blank" rel="noopener">github.com/Alakazam03/kickbacks ↗</a>
+    <a href="https://github.com/Alakazam03/topbid" target="_blank" rel="noopener">github.com/Alakazam03/topbid ↗</a>
   </div>
 </footer>
 
@@ -322,7 +322,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
   // copy install command
   (function(){
     var btn=document.getElementById('copyBtn');
-    var cmd='curl -fsSL https://raw.githubusercontent.com/Alakazam03/kickbacks/main/install.sh | bash';
+    var cmd='curl -fsSL https://raw.githubusercontent.com/Alakazam03/topbid/main/install.sh | bash';
     btn.addEventListener('click',function(){
       navigator.clipboard.writeText(cmd).then(function(){
         btn.textContent='copied'; btn.classList.add('done');

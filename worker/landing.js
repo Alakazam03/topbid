@@ -222,7 +222,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
       </div>
     </div>
 
-    <p class="credit">Inspired by the original status-line ad idea by <a href="https://x.com/andrewmccalip" target="_blank" rel="noopener">@andrewmccalip</a>. I rebuilt it on Claude Code's supported statusLine hook so it survives updates and never patches the binary.</p>
+    <p class="credit">Inspired by <a href="https://x.com/andrewmccalip" target="_blank" rel="noopener">@andrewmccalip</a>'s original UI-based Claude CLI ad experiment. That approach can break when Claude changes the UI; TopBid runs on Claude Code's supported statusLine hook, so it survives updates and never patches the binary.</p>
   </section>
 
   <section class="video-wrap">

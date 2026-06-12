@@ -2,9 +2,16 @@ import { LANDING_HTML } from "./landing.js";
 
 // CONFIG — edit these to change the rotating links
 const LINKS = [
-  { name: "Vaibhav", text: "Hire me!", link: "https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/" },
-  { name: "Karnal Biofuels", text: "Free Clicks", link: "https://karnalbiofuels.in/" },
-  { name: "Stately", text: "buy estamp anytime", link: "https://stately-frontend-staging.takemetoprod.com/" }
+  { name: "Vaibhav Aggarwal", text: "Vaibhav Aggarwal - connect on LinkedIn", link: "https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/" },
+  { name: "TopBid", text: "TopBid - sell the idle line in your terminal", link: "https://topbid.bankingvaibhav.workers.dev" },
+  { name: "TopBid GitHub", text: "TopBid is open source - inspect the renderer", link: "https://github.com/Alakazam03/topbid" },
+  { name: "Claude Code docs", text: "Claude Code statusLine docs - build on the hook", link: "https://docs.anthropic.com/en/docs/claude-code/statusline" },
+  { name: "Claude Code hooks", text: "Claude Code hooks - automate your dev loop", link: "https://docs.anthropic.com/en/docs/claude-code/hooks" },
+  { name: "Model Context Protocol", text: "MCP - connect AI tools to real context", link: "https://modelcontextprotocol.io/" },
+  { name: "Cloudflare Workers", text: "Cloudflare Workers - ship edge apps fast", link: "https://workers.cloudflare.com/" },
+  { name: "Karnal Biofuels", text: "Karnal Biofuels - clean energy from agri waste", link: "https://karnalbiofuels.in/" },
+  { name: "Stately", text: "Stately - buy estamp anytime", link: "https://stately-frontend-staging.takemetoprod.com/" },
+  { name: "Add your link", text: "Your link can show up in this terminal line", link: "https://topbid.bankingvaibhav.workers.dev/#featured" }
 ];
 
 // Counters live in KV (binding TOPBID) so points + views survive restarts and
@@ -69,7 +76,7 @@ export default {
     if (path === "/ad") {
       const key = url.searchParams.get("key");
       if (!key) return json({ error: "missing key" }, 400);
-      const idx = Math.floor(Date.now() / 10000) % LINKS.length;
+      const idx = Math.floor(Date.now() / 1000) % LINKS.length;
       const { name, text, link } = LINKS[idx];
       // Persist the impression + per-link view without blocking the response.
       const work = Promise.all([

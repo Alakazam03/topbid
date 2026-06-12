@@ -313,6 +313,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
       <div class="step"><span class="n">01</span><div><h3>Install the renderer</h3><p>One script lands in <code>~/.topbid</code> and adds a statusLine to your settings. Your old settings are backed up first.</p></div></div>
       <div class="step"><span class="n">02</span><div><h3>It reads the live list</h3><p>The status line pulls the current link, caches it, and refreshes in the background without ever blocking Claude Code.</p></div></div>
       <div class="step"><span class="n">03</span><div><h3>Featured links rotate</h3><p>The list is small and hand-picked. Terminals cycle through it as they refresh.</p></div></div>
+      <div class="step"><span class="n">04</span><div><h3>Fast preview, then quiet</h3><p>The first few refreshes run quickly so you can see the rotation. After that, TopBid backs off to roughly once a minute.</p></div></div>
     </div>
   </section>
 

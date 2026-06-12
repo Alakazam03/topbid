@@ -6,7 +6,7 @@ A community link line in your Claude Code status bar. People can add links, and 
 
 Claude Code lets you set a `statusLine` command, a script whose output shows at the bottom of the terminal. TopBid is that script. It prints the current top link, caches it, and refreshes in the background. The live queue and activity counters live in a small Cloudflare Worker.
 
-The installer writes the live Worker endpoint to `~/.topbid/endpoint`, and the renderer calls `/ad` every 30 seconds. Links submitted into the Worker-backed list start appearing in terminals automatically after the local cache refreshes. `TOPBID_ENDPOINT` can override the endpoint for testing.
+The installer writes the live Worker endpoint to `~/.topbid/endpoint`, and the renderer calls `/ad` on a 1s, 1s, 1s, 2s, 4s, then 60s refresh cadence. The first few refreshes make the rotation obvious; after that it backs off. Links submitted into the Worker-backed list start appearing in terminals automatically after the local cache refreshes. `TOPBID_ENDPOINT` can override the endpoint for testing.
 
 ## What it touches (and what it doesn't)
 
@@ -82,7 +82,7 @@ curl -X POST "$TOPBID_ENDPOINT/admin/market/delete?id=some-link-id&token=$ADMIN_
 ## Caveats
 
 - Impression counts use Cloudflare KV, which is eventually consistent. Fine for one machine, but it drops counts under concurrency. A real build uses a Durable Object per key.
-- The ad endpoint is open. A per-key 20s cooldown stops a tight loop from minting impressions (an honest renderer pings every 30s, so it's unaffected), but this isn't settlement-grade: KV is still eventually consistent, and an attacker can rotate keys.
+- The ad endpoint is open. This isn't settlement-grade: KV is eventually consistent, and an attacker can rotate keys. Payouts stay manual during beta while fraud controls are still simple.
 - It's the status bar, not the spinner, so the ad is persistent rather than shown only while waiting.
 
 ## Uninstall

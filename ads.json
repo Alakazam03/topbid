@@ -4,5 +4,59 @@
     "copy": "Vaibhav Aggarwal - connect on LinkedIn",
     "url": "https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/",
     "bid": 1
+  },
+  {
+    "advertiser": "TopBid",
+    "copy": "TopBid - sell the idle line in your terminal",
+    "url": "https://topbid.bankingvaibhav.workers.dev",
+    "bid": 1
+  },
+  {
+    "advertiser": "TopBid GitHub",
+    "copy": "TopBid is open source - inspect the renderer",
+    "url": "https://github.com/Alakazam03/topbid",
+    "bid": 1
+  },
+  {
+    "advertiser": "Claude Code docs",
+    "copy": "Claude Code statusLine docs - build on the hook",
+    "url": "https://docs.anthropic.com/en/docs/claude-code/statusline",
+    "bid": 1
+  },
+  {
+    "advertiser": "Claude Code hooks",
+    "copy": "Claude Code hooks - automate your dev loop",
+    "url": "https://docs.anthropic.com/en/docs/claude-code/hooks",
+    "bid": 1
+  },
+  {
+    "advertiser": "Model Context Protocol",
+    "copy": "MCP - connect AI tools to real context",
+    "url": "https://modelcontextprotocol.io/",
+    "bid": 1
+  },
+  {
+    "advertiser": "Cloudflare Workers",
+    "copy": "Cloudflare Workers - ship edge apps fast",
+    "url": "https://workers.cloudflare.com/",
+    "bid": 1
+  },
+  {
+    "advertiser": "Karnal Biofuels",
+    "copy": "Karnal Biofuels - clean energy from agri waste",
+    "url": "https://karnalbiofuels.in/",
+    "bid": 1
+  },
+  {
+    "advertiser": "Stately",
+    "copy": "Stately - buy estamp anytime",
+    "url": "https://stately-frontend-staging.takemetoprod.com/",
+    "bid": 1
+  },
+  {
+    "advertiser": "Add your link",
+    "copy": "Your link can show up in this terminal line",
+    "url": "https://topbid.bankingvaibhav.workers.dev/#featured",
+    "bid": 1
   }
 ]

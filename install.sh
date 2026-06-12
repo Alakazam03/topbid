@@ -35,6 +35,8 @@ fi
 chmod +x "$TB_DIR/topbid.sh"
 printf '%s\n' "$DEFAULT_ENDPOINT" > "$TB_DIR/endpoint"
 rm -f "$TB_DIR/current_ad.txt"
+rm -f "$TB_DIR/refresh_step"
+rmdir "$TB_DIR/refresh.lock" 2>/dev/null || true
 
 # merge statusLine with node — abort rather than clobber an unparseable file
 if [ -f "$SETTINGS" ]; then cp "$SETTINGS" "$SETTINGS.topbid.bak"; fi

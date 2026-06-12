@@ -10,7 +10,8 @@ ENDPOINT="${TOPBID_ENDPOINT:-}"             # empty = offline; nothing leaves th
 ENDPOINT_FILE="$TB_DIR/endpoint"
 CACHE_FILE="$TB_DIR/current_ad.txt"
 KEY_FILE="$TB_DIR/key"
-REFRESH_SECS=30
+INTERVAL_FILE="$TB_DIR/refresh_step"
+LOCK_DIR="$TB_DIR/refresh.lock"
 
 mkdir -p "$TB_DIR" 2>/dev/null
 cat >/dev/null 2>&1                          # drain + discard the session JSON Claude Code pipes in
@@ -51,6 +52,24 @@ pick_local() {  # random copy + URL from ads.json, via node
 
 mtime() { stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null || echo 0; }  # GNU first, BSD fallback
 
+refresh_interval() {
+  step="$(cat "$INTERVAL_FILE" 2>/dev/null)"
+  case "$step" in
+    ''|*[!0-9]*) echo 1 ;;
+    0|1|2) echo 1 ;;
+    3) echo 2 ;;
+    4) echo 4 ;;
+    *) echo 60 ;;
+  esac
+}
+
+advance_interval() {
+  step="$(cat "$INTERVAL_FILE" 2>/dev/null)"
+  case "$step" in ''|*[!0-9]*) step=0 ;; esac
+  [ "$step" -lt 5 ] && step=$((step + 1))
+  printf '%s\n' "$step" > "$INTERVAL_FILE" 2>/dev/null
+}
+
 render_payload() {
   node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
     try{const x=JSON.parse(s);process.stdout.write(String(x.copy||"")+"\n"+String(x.url||"")+"\n"+String(x.bid||1))}catch(e){}})' 2>/dev/null \
@@ -70,7 +89,7 @@ refresh() {  # background: pick link, count one impression, update cache
 need_refresh=0
 if [ -s "$CACHE_FILE" ]; then
   cat "$CACHE_FILE"                                   # warm path: instant, no parser
-  [ "$(( $(date +%s) - $(mtime "$CACHE_FILE") ))" -ge "$REFRESH_SECS" ] && need_refresh=1
+  [ "$(( $(date +%s) - $(mtime "$CACHE_FILE") ))" -ge "$(refresh_interval)" ] && need_refresh=1
 else
   payload="$(pick_local)"
   if [ -n "$payload" ]; then
@@ -81,5 +100,13 @@ else
   need_refresh=1
 fi
 
-if [ "$need_refresh" -eq 1 ]; then ( refresh ) >/dev/null 2>&1 & disown 2>/dev/null; fi
+if [ "$need_refresh" -eq 1 ]; then
+  (
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      trap 'rmdir "$LOCK_DIR" 2>/dev/null' EXIT
+      refresh
+      advance_interval
+    fi
+  ) >/dev/null 2>&1 & disown 2>/dev/null
+fi
 exit 0

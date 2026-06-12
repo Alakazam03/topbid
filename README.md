@@ -37,7 +37,7 @@ Check activity any time:
 curl "$TOPBID_ENDPOINT/me?key=$(cat ~/.topbid/key)"
 ```
 
-Developers keep 50% of ad revenue. Points track the impressions your terminal serves and count toward live payouts.
+TopBid is in beta. Developers keep 50% of net ad revenue after payment processing fees. Points track the impressions your terminal serves and count toward live payouts. Payouts are manual by UPI or PayPal once your balance reaches $10.
 
 ## Manage the link list
 

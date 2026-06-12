@@ -131,6 +131,10 @@ export const LANDING_HTML = `<!DOCTYPE html>
   .earn-stat .lab { color:var(--faint); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:2px; }
   .earn-stat .big { color:var(--amber); font-weight:800; font-size:24px; font-family:var(--mono); }
   .earn-stat .soon { color:var(--muted); font-weight:600; font-size:15px; font-family:var(--mono); }
+  .faq { display:grid; gap:16px; margin-top:28px; }
+  .faq-item { border-top:1px solid var(--border-soft); padding-top:16px; }
+  .faq-item h3 { margin:0 0 5px; font-size:15px; font-weight:600; }
+  .faq-item p { margin:0; font-size:14px; color:var(--muted); }
 
   /* touches */
   .touch-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -257,6 +261,24 @@ export const LANDING_HTML = `<!DOCTYPE html>
       <button class="btn primary" id="checkBtn" type="button">Check points</button>
     </div>
     <div id="earnOut" class="earn-out"></div>
+    <div class="faq">
+      <div class="faq-item">
+        <h3>Soft launch payout terms</h3>
+        <p>TopBid is in beta. Developers keep 50% of net ad revenue after payment processing fees. Payouts are manual by UPI or PayPal once your balance reaches $10.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Does this read my code?</h3>
+        <p>No. The renderer drains and discards the session JSON Claude pipes in. It does not read your files, prompts, transcript, environment variables, or secrets.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How are payouts calculated?</h3>
+        <p>Your anonymous key counts impressions served from your terminal. During beta, I reconcile impressions against collected ad revenue and pay 50% of net revenue back to participating developers.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Can I remove it?</h3>
+        <p>Yes. Delete <code style="font-family:var(--mono);background:var(--surface);padding:1px 5px;border-radius:4px;color:var(--text);">~/.topbid</code> and restore <code style="font-family:var(--mono);background:var(--surface);padding:1px 5px;border-radius:4px;color:var(--text);">~/.claude/settings.json</code> from the <code style="font-family:var(--mono);background:var(--surface);padding:1px 5px;border-radius:4px;color:var(--text);">.topbid.bak</code> backup, or remove the <code style="font-family:var(--mono);background:var(--surface);padding:1px 5px;border-radius:4px;color:var(--text);">statusLine</code> key.</p>
+      </div>
+    </div>
   </section>
 
   <section>

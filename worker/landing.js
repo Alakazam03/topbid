@@ -226,11 +226,8 @@ export const LANDING_HTML = `<!DOCTYPE html>
   </section>
 
   <section class="video-wrap">
-    <!-- YouTube alternative:
-    <iframe src="https://www.youtube.com/embed/VIDEO_ID_HERE" title="TopBid demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-    -->
     <div class="video-frame">
-      <video controls playsinline preload="metadata" src="VIDEO_URL_HERE" poster="POSTER_URL_HERE"></video>
+      <iframe src="https://www.youtube.com/embed/b_fUI2vZpIs" title="TopBid demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
   </section>
 

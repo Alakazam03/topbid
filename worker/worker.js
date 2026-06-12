@@ -14,11 +14,16 @@ const LINKS = [
   { name: "Add your link", text: "Your link can show up in this terminal line", link: "https://topbid.bankingvaibhav.workers.dev/#featured" }
 ];
 
+const PLEDGES_KEY = "pledges:v1";
+const STARTER_MS = 60 * 1000;
+const MAX_PLEDGES = 100;
+
 // Counters live in KV (binding TOPBID) so points + views survive restarts and
 // cold starts. If the binding is missing (local dev before `wrangler kv ...`),
 // we fall back to in-memory maps so nothing breaks — they just reset.
 const memImpressions = new Map();
 const memViews = new Map();
+let memPledges = [];
 
 const kv = (env) => (env && env.TOPBID) || null;
 
@@ -42,9 +47,71 @@ async function incrCount(env, key, mem) {
   await store.put(key, String(cur + 1));
 }
 
+async function getFirstSeen(env, key) {
+  const now = Date.now();
+  const memKey = "first:" + key;
+  const store = kv(env);
+  if (!store) {
+    if (!memImpressions.has(memKey)) memImpressions.set(memKey, now);
+    return memImpressions.get(memKey);
+  }
+  const existing = await store.get(memKey);
+  if (existing) return parseInt(existing, 10) || now;
+  await store.put(memKey, String(now), { expirationTtl: 60 * 60 * 24 * 30 });
+  return now;
+}
+
+async function getPledges(env) {
+  const store = kv(env);
+  if (!store) return memPledges;
+  const raw = await store.get(PLEDGES_KEY);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+async function savePledges(env, pledges) {
+  const sorted = pledges
+    .slice()
+    .sort((a, b) => (b.pledge || 0) - (a.pledge || 0) || (b.createdAt || 0) - (a.createdAt || 0))
+    .slice(0, MAX_PLEDGES);
+  const store = kv(env);
+  if (!store) {
+    memPledges = sorted;
+    return sorted;
+  }
+  await store.put(PLEDGES_KEY, JSON.stringify(sorted));
+  return sorted;
+}
+
+function cleanText(value, max) {
+  return String(value || "").replace(/\s+/g, " ").trim().slice(0, max);
+}
+
+function cleanUrl(value) {
+  const raw = String(value || "").trim();
+  const url = new URL(raw);
+  if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("URL must start with http or https");
+  return url.toString();
+}
+
+function pledgeToLink(p) {
+  return {
+    name: p.name,
+    text: p.text,
+    link: p.link,
+    pledge: p.pledge,
+    pledged: true,
+  };
+}
+
 const CORS = {
   "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET, OPTIONS",
+  "access-control-allow-methods": "GET, POST, OPTIONS",
   "access-control-allow-headers": "content-type",
 };
 
@@ -76,8 +143,12 @@ export default {
     if (path === "/ad") {
       const key = url.searchParams.get("key");
       if (!key) return json({ error: "missing key" }, 400);
-      const idx = Math.floor(Date.now() / 1000) % LINKS.length;
-      const { name, text, link } = LINKS[idx];
+      const firstSeen = await getFirstSeen(env, key);
+      const pledges = await getPledges(env);
+      const pledgeLinks = pledges.map(pledgeToLink);
+      const pool = Date.now() - firstSeen >= STARTER_MS ? pledgeLinks.concat(LINKS) : LINKS;
+      const idx = Math.floor(Date.now() / 1000) % pool.length;
+      const { name, text, link } = pool[idx];
       // Persist the impression + per-link view without blocking the response.
       const work = Promise.all([
         incrCount(env, "imp:" + key, memImpressions),
@@ -90,8 +161,42 @@ export default {
     }
 
     if (path === "/market") {
-      const views = await Promise.all(LINKS.map((l) => getCount(env, "views:" + l.name, memViews)));
-      return json({ market: LINKS.map((l, i) => ({ ...l, views: views[i] })) });
+      const pledgeLinks = (await getPledges(env)).map(pledgeToLink);
+      const market = pledgeLinks.concat(LINKS);
+      const views = await Promise.all(market.map((l) => getCount(env, "views:" + l.name, memViews)));
+      return json({ market: market.map((l, i) => ({ ...l, views: views[i] })) });
+    }
+
+    if (path === "/pledge") {
+      if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
+      let body;
+      try {
+        body = await req.json();
+      } catch (_) {
+        return json({ error: "invalid JSON" }, 400);
+      }
+      let link;
+      try {
+        link = cleanUrl(body.link || body.url);
+      } catch (err) {
+        return json({ error: err.message || "invalid URL" }, 400);
+      }
+      const name = cleanText(body.name || body.advertiser, 60);
+      const text = cleanText(body.text || body.copy || body.message, 90);
+      const pledge = Math.max(0, Math.round(Number(body.pledge || body.donation || body.amount || 0)));
+      if (!name) return json({ error: "name required" }, 400);
+      if (!text) return json({ error: "message required" }, 400);
+      if (!pledge) return json({ error: "future donation amount required" }, 400);
+      const item = {
+        id: "pledge-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
+        name,
+        text,
+        link,
+        pledge,
+        createdAt: Date.now(),
+      };
+      const pledges = await savePledges(env, [item].concat(await getPledges(env)));
+      return json({ ok: true, pledge: item, count: pledges.length });
     }
 
     if (path === "/me") {

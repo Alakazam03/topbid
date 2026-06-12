@@ -8,6 +8,8 @@ Claude Code lets you set a `statusLine` command, a script whose output shows at 
 
 The installer writes the live Worker endpoint to `~/.topbid/endpoint`, and the renderer calls `/ad` on a 1s, 1s, 1s, 2s, 4s, then 60s refresh cadence. The first few refreshes make the rotation obvious; after that it backs off. Links submitted into the Worker-backed list start appearing in terminals automatically after the local cache refreshes. `TOPBID_ENDPOINT` can override the endpoint for testing.
 
+Pledged links are no-money auction entries: submit a LinkedIn or project URL, a terminal message, and the amount you would donate later if it works. Every developer sees the seed rotation for the first 60 seconds; after that, pledged links enter the rotation before seed links, ordered by pledge amount.
+
 ## What it touches (and what it doesn't)
 
 It writes one script to `~/.topbid/` and adds a `statusLine` key to `~/.claude/settings.json`, backing up the old file first. It does not read your code, your prompts, your conversation, your environment variables, or the session data Claude Code hands the script. That input is dropped on the floor. The only thing that ever leaves your machine is a random key used to count ad views, and only once you set an endpoint. With no endpoint, it runs offline and nothing leaves.

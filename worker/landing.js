@@ -162,6 +162,14 @@ export const LANDING_HTML = `<!DOCTYPE html>
   .cta-box { border:1px solid var(--border); border-radius:14px; padding:30px; background:linear-gradient(180deg,var(--surface),var(--surface-2)); text-align:center; }
   .cta-box h2 { margin-bottom:8px; }
   .cta-box p { color:var(--muted); font-size:14.5px; max-width:440px; margin:0 auto 22px; }
+  .pledge-form { display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:left; margin:22px auto 16px; max-width:560px; }
+  .pledge-form label { display:grid; gap:5px; color:var(--faint); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+  .pledge-form label.wide { grid-column:1/-1; }
+  .pledge-form input { width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:11px 12px; color:var(--text); font-family:var(--mono); font-size:13px; outline:none; }
+  .pledge-form input:focus { border-color:var(--amber); }
+  .pledge-form .submit-row { grid-column:1/-1; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .pledge-out { color:var(--muted); font-family:var(--mono); font-size:12px; min-height:18px; }
+  @media (max-width:560px){ .pledge-form { grid-template-columns:1fr; } }
   .btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
   .btn { font-family:var(--mono); font-size:13.5px; font-weight:500; text-decoration:none; padding:11px 20px; border-radius:9px; transition:transform .12s,filter .12s; display:inline-flex; align-items:center; gap:8px; border:0; cursor:pointer; }
   .btn:active { transform:translateY(1px); }
@@ -320,12 +328,30 @@ export const LANDING_HTML = `<!DOCTYPE html>
   <section id="featured">
     <div class="cta-box">
       <h2>Put your link where developers actually look.</h2>
-      <p>A few slots, hand-picked. Send me your name, your link, and the short text to show in the terminal. I add it by hand.</p>
+      <p>No payment today. Add your LinkedIn or project page, the short terminal message, and the amount you would donate if this works. Higher pledges go first after each developer's first 60 seconds.</p>
+      <form class="pledge-form" id="pledgeForm">
+        <label>Name
+          <input id="pledgeName" name="name" maxlength="60" placeholder="Your name or project" required />
+        </label>
+        <label>Future donation
+          <input id="pledgeAmount" name="pledge" type="number" min="1" step="1" placeholder="25" required />
+        </label>
+        <label class="wide">LinkedIn or project URL
+          <input id="pledgeLink" name="link" type="url" placeholder="https://linkedin.com/in/..." required />
+        </label>
+        <label class="wide">Terminal message
+          <input id="pledgeText" name="text" maxlength="90" placeholder="Your message in the Claude status line" required />
+        </label>
+        <div class="submit-row">
+          <button class="btn primary" id="pledgeBtn" type="submit">Add pledge</button>
+          <span class="pledge-out" id="pledgeOut"></span>
+        </div>
+      </form>
       <div class="btns">
-        <a class="btn primary" href="https://wa.me/918168029810?text=Hi%20Vaibhav%2C%20I%27d%20like%20to%20add%20my%20link%20to%20TopBid.%0A%0AName%3A%20%0ALink%3A%20%0ATerminal%20text%20(max%2080%20chars)%3A%20" target="_blank" rel="noopener">DM on WhatsApp →</a>
+        <a class="btn ghost" href="https://wa.me/918168029810?text=Hi%20Vaibhav%2C%20I%27d%20like%20to%20add%20my%20link%20to%20TopBid.%0A%0AName%3A%20%0ALink%3A%20%0ATerminal%20text%20(max%2090%20chars)%3A%20%0AFuture%20donation%3A%20" target="_blank" rel="noopener">DM on WhatsApp</a>
         <a class="btn ghost" href="https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/" target="_blank" rel="noopener">Connect on LinkedIn</a>
       </div>
-      <p class="cta-fine">no forms · hand-picked · no auto-add</p>
+      <p class="cta-fine">no money collected · pledge auction · starts after the first 60 seconds</p>
     </div>
   </section>
 
@@ -368,9 +394,10 @@ export const LANDING_HTML = `<!DOCTYPE html>
       if(!items || !items.length){ listEl.innerHTML='<div class="empty">No links featured right now.</div>'; }
       else {
         var rows=items.map(function(it){
+          var stat=it.pledged ? ('$'+Number(it.pledge||0).toLocaleString()+' pledged') : ((it.views||0).toLocaleString()+' views');
           return '<div class="feature-row"><span class="fn">'+esc(it.name)+'</span>'+
                  '<span class="ft">'+esc(it.text)+'</span>'+
-                 '<span class="fv">'+(it.views||0).toLocaleString()+' views</span>'+
+                 '<span class="fv">'+stat+'</span>'+
                  '<a class="fl" href="'+encodeURI(it.link)+'" target="_blank" rel="noopener">'+esc(host(it.link))+' ↗</a></div>';
         });
         rows.push('<div class="feature-row open"><span class="fn">Your ad shows up here</span>'+
@@ -400,6 +427,41 @@ export const LANDING_HTML = `<!DOCTYPE html>
     fetch('/market').then(function(r){ return r.json(); })
       .then(function(d){ render((d&&d.market&&d.market.length)?d.market:fallback); })
       .catch(function(){ render(fallback); });
+    window.refreshTopBidMarket=function(){
+      fetch('/market').then(function(r){ return r.json(); })
+        .then(function(d){ render((d&&d.market&&d.market.length)?d.market:fallback); });
+    };
+  })();
+
+  // no-money pledge auction
+  (function(){
+    var form=document.getElementById('pledgeForm');
+    if(!form) return;
+    var btn=document.getElementById('pledgeBtn');
+    var out=document.getElementById('pledgeOut');
+    function val(id){ return (document.getElementById(id).value||'').trim(); }
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      btn.disabled=true; out.textContent='adding…';
+      fetch('/pledge',{
+        method:'POST',
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify({
+          name:val('pledgeName'),
+          link:val('pledgeLink'),
+          text:val('pledgeText'),
+          pledge:val('pledgeAmount')
+        })
+      }).then(function(r){ return r.json().then(function(d){ d.status=r.status; return d; }); }).then(function(d){
+        btn.disabled=false;
+        if(d.error){ out.textContent='✗ '+d.error; return; }
+        out.textContent='added — pledge #'+d.count+' in the queue.';
+        form.reset();
+        if(window.refreshTopBidMarket) window.refreshTopBidMarket();
+      }).catch(function(){
+        btn.disabled=false; out.textContent='could not add pledge.';
+      });
+    });
   })();
 
   // points / earnings tracker — reads /me?key=

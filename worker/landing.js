@@ -196,7 +196,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
   <section class="hero" style="border:0;">
     <div class="eyebrow">for Claude Code</div>
     <h1>Your terminal has a line that does nothing. Sell it.</h1>
-    <p class="lede">Every second Claude thinks, the bottom of your status bar can be earning. TopBid runs it on the statusLine hook Anthropic supports, so an update never breaks it.</p>
+    <p class="lede">Every second Claude thinks, the bottom of your status bar can be earning. Developers keep 50% of ad revenue. TopBid runs it on the statusLine hook Anthropic supports, so an update never breaks it.</p>
 
     <div class="install">
       <code id="cmd"><span class="tok">$</span> curl -fsSL https://raw.githubusercontent.com/Alakazam03/topbid/main/install.sh | bash</code>
@@ -251,7 +251,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
   <section id="earnings">
     <p class="kicker">your earnings</p>
     <h2>Track your points</h2>
-    <p class="lede" style="margin:0 0 22px;">Run <code style="font-family:var(--mono);background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--text);">cat ~/.topbid/key</code> and paste the key to see the impressions you've served. Points count toward live payouts.</p>
+    <p class="lede" style="margin:0 0 22px;">Run <code style="font-family:var(--mono);background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--text);">cat ~/.topbid/key</code> and paste the key to see the impressions you've served. Points count toward live payouts, with 50% of ad revenue paid back to developers.</p>
     <div class="track">
       <input id="keyInput" class="keyfield" placeholder="paste your TopBid key" autocomplete="off" spellcheck="false" />
       <button class="btn primary" id="checkBtn" type="button">Check points</button>
@@ -310,7 +310,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
 
 <footer>
   <div class="wrap foot">
-    <span>Open source. Earn points now — payouts are live.</span>
+    <span>Open source. Earn points now — developers keep 50% of ad revenue.</span>
     <a href="https://github.com/Alakazam03/topbid" target="_blank" rel="noopener">github.com/Alakazam03/topbid ↗</a>
   </div>
 </footer>

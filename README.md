@@ -37,6 +37,8 @@ Check activity any time:
 curl "$TOPBID_ENDPOINT/me?key=$(cat ~/.topbid/key)"
 ```
 
+Developers keep 50% of ad revenue. Points track the impressions your terminal serves and count toward live payouts.
+
 ## Manage the link list
 
 Public submissions go to `POST /submit`. The first 10 direct submissions are added straight to the live Worker/KV link list; later submissions are stored under `pending:*` for review.

@@ -1,0 +1,9 @@
+name = "topbid"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+# Persistent counters (points + per-link views).
+# Namespace created with: npx wrangler kv namespace create TOPBID
+[[kv_namespaces]]
+binding = "TOPBID"
+id = "0852fd36e68141b5833cffc9454dcfb1"

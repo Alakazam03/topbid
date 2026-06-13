@@ -8,7 +8,7 @@ Claude Code lets you set a `statusLine` command, a script whose output shows at 
 
 The installer writes the live Worker endpoint to `~/.topbid/endpoint`, and the renderer calls `/ad` on a 1s, 1s, 1s, 2s, 4s, then 60s refresh cadence. The first few refreshes make the rotation obvious; after that it backs off. Links submitted into the Worker-backed list start appearing in terminals automatically after the local cache refreshes. `TOPBID_ENDPOINT` can override the endpoint for testing.
 
-Pledged links are no-money auction entries: submit a LinkedIn or project URL, a terminal message, and the amount you would donate later if it works. Every developer sees the seed rotation for the first 60 seconds; after that, pledged links enter the rotation before seed links, ordered by pledge amount.
+Pledged links are no-money auction entries: submit a LinkedIn or project URL, a short company symbol, a terminal message, and the amount you would donate later if it works. The auction table keeps up to 100 companies. Every developer sees the 10 seeded company-style ads for the first 60 seconds; after that, pledged links enter the rotation before seed links, ordered by pledge amount.
 
 ## What it touches (and what it doesn't)
 
@@ -85,7 +85,7 @@ curl -X POST "$TOPBID_ENDPOINT/admin/market/delete?id=some-link-id&token=$ADMIN_
 
 - Impression counts use Cloudflare KV, which is eventually consistent. Fine for one machine, but it drops counts under concurrency. A real build uses a Durable Object per key.
 - The ad endpoint is open. This isn't settlement-grade: KV is eventually consistent, and an attacker can rotate keys. Payouts stay manual during beta while fraud controls are still simple.
-- It's the status bar, not the spinner, so the ad is persistent rather than shown only while waiting.
+- The supported MVP uses `statusLine`. Replacing Claude's dynamic thinking indicator is an experimental TODO because local Claude Code is a bundled native app, so patching that UI is version-specific and fragile.
 
 ## Uninstall
 

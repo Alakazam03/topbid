@@ -28,16 +28,16 @@ KEY="$(cat "$KEY_FILE" 2>/dev/null)"
 
 Y=$'\033[1;33m'; CYAN=$'\033[1;36m'; BLUE=$'\033[1;34m'; GOLD=$'\033[1;33m'; DIM=$'\033[2m'; RST=$'\033[0m'
 render() {
-  copy="$1"; url="${2:-}"
+  copy="$1"; url="${2:-}"; icon="${3:-T$}"
   if [ -n "$url" ]; then
-    printf '%sT$%s %s%s%s %s↗ %s%s%s' \
-      "$Y" "$RST" \
+    printf '%s[%s]%s %s%s%s %s↗ %s%s%s' \
+      "$Y" "$icon" "$RST" \
       "$CYAN" "$copy" "$RST" \
       "$DIM" \
       "$BLUE" "$url" "$RST"
   else
-    printf '%sT$%s %s%s%s' \
-      "$Y" "$RST" \
+    printf '%s[%s]%s %s%s%s' \
+      "$Y" "$icon" "$RST" \
       "$CYAN" "$copy" "$RST"
   fi
 }
@@ -47,7 +47,7 @@ pick_local() {  # random copy + URL from ads.json, via node
   [ -s "$ADS_FILE" ] || return 1
   node -e 'try{const a=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));
     const t=a[Math.floor(Math.random()*a.length)]||{};
-    process.stdout.write(JSON.stringify({copy:String(t.copy||""),url:String(t.url||""),bid:Number(t.bid||1)}))}catch(e){}' "$ADS_FILE"
+    process.stdout.write(JSON.stringify({icon:String(t.icon||"T$"),copy:String(t.copy||""),url:String(t.url||""),bid:Number(t.bid||1)}))}catch(e){}' "$ADS_FILE"
 }
 
 mtime() { stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null || echo 0; }  # GNU first, BSD fallback
@@ -72,8 +72,8 @@ advance_interval() {
 
 render_payload() {
   node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
-    try{const x=JSON.parse(s);process.stdout.write(String(x.copy||"")+"\n"+String(x.url||"")+"\n"+String(x.bid||1))}catch(e){}})' 2>/dev/null \
-    | { IFS= read -r copy; IFS= read -r url; IFS= read -r bid; [ -n "$copy" ] && render "$copy" "$url"; }
+    try{const x=JSON.parse(s);process.stdout.write(String(x.copy||"")+"\n"+String(x.url||"")+"\n"+String(x.icon||"T$"))}catch(e){}})' 2>/dev/null \
+    | { IFS= read -r copy; IFS= read -r url; IFS= read -r icon; [ -n "$copy" ] && render "$copy" "$url" "$icon"; }
 }
 
 refresh() {  # background: pick link, count one impression, update cache
@@ -95,7 +95,7 @@ else
   if [ -n "$payload" ]; then
     printf '%s' "$payload" | render_payload | tee "$CACHE_FILE"
   else
-    render "Vaibhav Aggarwal · connect on LinkedIn" "https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/" | tee "$CACHE_FILE"
+    render "TopBid - sell the idle line in your terminal" "https://topbid.bankingvaibhav.workers.dev" "T$" | tee "$CACHE_FILE"
   fi
   need_refresh=1
 fi

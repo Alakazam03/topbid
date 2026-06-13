@@ -1,62 +1,72 @@
 [
   {
-    "advertiser": "Vaibhav Aggarwal",
-    "copy": "Vaibhav Aggarwal - connect on LinkedIn",
-    "url": "https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/",
+    "icon": "S",
+    "advertiser": "Sarvam AI",
+    "copy": "Sarvam AI - voice AI for Indian languages",
+    "url": "https://sarvam.ai/",
     "bid": 1
   },
   {
-    "advertiser": "TopBid",
-    "copy": "TopBid - sell the idle line in your terminal",
-    "url": "https://topbid.bankingvaibhav.workers.dev",
+    "icon": "C",
+    "advertiser": "CRED",
+    "copy": "CRED - rewards for creditworthy people",
+    "url": "https://cred.club/",
     "bid": 1
   },
   {
-    "advertiser": "TopBid GitHub",
-    "copy": "TopBid is open source - inspect the renderer",
-    "url": "https://github.com/Alakazam03/topbid",
+    "icon": "RZP",
+    "advertiser": "Razorpay",
+    "copy": "Razorpay - payments stack for Indian businesses",
+    "url": "https://razorpay.com/",
     "bid": 1
   },
   {
-    "advertiser": "Claude Code docs",
-    "copy": "Claude Code statusLine docs - build on the hook",
-    "url": "https://docs.anthropic.com/en/docs/claude-code/statusline",
+    "icon": "Z",
+    "advertiser": "Zerodha",
+    "copy": "Zerodha - invest and trade with Kite",
+    "url": "https://zerodha.com/",
     "bid": 1
   },
   {
-    "advertiser": "Claude Code hooks",
-    "copy": "Claude Code hooks - automate your dev loop",
-    "url": "https://docs.anthropic.com/en/docs/claude-code/hooks",
+    "icon": "P",
+    "advertiser": "Postman",
+    "copy": "Postman - build and test APIs faster",
+    "url": "https://www.postman.com/",
     "bid": 1
   },
   {
-    "advertiser": "Model Context Protocol",
-    "copy": "MCP - connect AI tools to real context",
-    "url": "https://modelcontextprotocol.io/",
+    "icon": "BS",
+    "advertiser": "BrowserStack",
+    "copy": "BrowserStack - test on real browsers and devices",
+    "url": "https://www.browserstack.com/",
     "bid": 1
   },
   {
-    "advertiser": "Cloudflare Workers",
-    "copy": "Cloudflare Workers - ship edge apps fast",
-    "url": "https://workers.cloudflare.com/",
+    "icon": "FW",
+    "advertiser": "Freshworks",
+    "copy": "Freshworks - customer support and CRM software",
+    "url": "https://www.freshworks.com/",
     "bid": 1
   },
   {
-    "advertiser": "Karnal Biofuels",
-    "copy": "Karnal Biofuels - clean energy from agri waste",
-    "url": "https://karnalbiofuels.in/",
+    "icon": "ZHO",
+    "advertiser": "Zoho",
+    "copy": "Zoho - software suite for growing teams",
+    "url": "https://www.zoho.com/",
     "bid": 1
   },
   {
-    "advertiser": "Stately",
-    "copy": "Stately - buy estamp anytime",
-    "url": "https://stately-frontend-staging.takemetoprod.com/",
+    "icon": "S",
+    "advertiser": "Swiggy",
+    "copy": "Swiggy - food, Instamart, and more",
+    "url": "https://www.swiggy.com/",
     "bid": 1
   },
   {
-    "advertiser": "Add your link",
-    "copy": "Your link can show up in this terminal line",
-    "url": "https://topbid.bankingvaibhav.workers.dev/#featured",
+    "icon": "F",
+    "advertiser": "Flipkart",
+    "copy": "Flipkart - shop online across India",
+    "url": "https://www.flipkart.com/",
     "bid": 1
   }
 ]

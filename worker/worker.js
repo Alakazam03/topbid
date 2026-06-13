@@ -2,21 +2,22 @@ import { LANDING_HTML } from "./landing.js";
 
 // CONFIG — edit these to change the rotating links
 const LINKS = [
-  { name: "Vaibhav Aggarwal", text: "Vaibhav Aggarwal - connect on LinkedIn", link: "https://www.linkedin.com/in/vaibhav-aggarwal-15070a138/" },
-  { name: "TopBid", text: "TopBid - sell the idle line in your terminal", link: "https://topbid.bankingvaibhav.workers.dev" },
-  { name: "TopBid GitHub", text: "TopBid is open source - inspect the renderer", link: "https://github.com/Alakazam03/topbid" },
-  { name: "Claude Code docs", text: "Claude Code statusLine docs - build on the hook", link: "https://docs.anthropic.com/en/docs/claude-code/statusline" },
-  { name: "Claude Code hooks", text: "Claude Code hooks - automate your dev loop", link: "https://docs.anthropic.com/en/docs/claude-code/hooks" },
-  { name: "Model Context Protocol", text: "MCP - connect AI tools to real context", link: "https://modelcontextprotocol.io/" },
-  { name: "Cloudflare Workers", text: "Cloudflare Workers - ship edge apps fast", link: "https://workers.cloudflare.com/" },
-  { name: "Karnal Biofuels", text: "Karnal Biofuels - clean energy from agri waste", link: "https://karnalbiofuels.in/" },
-  { name: "Stately", text: "Stately - buy estamp anytime", link: "https://stately-frontend-staging.takemetoprod.com/" },
-  { name: "Add your link", text: "Your link can show up in this terminal line", link: "https://topbid.bankingvaibhav.workers.dev/#featured" }
+  { icon: "S", name: "Sarvam AI", text: "Sarvam AI - voice AI for Indian languages", link: "https://sarvam.ai/" },
+  { icon: "C", name: "CRED", text: "CRED - rewards for creditworthy people", link: "https://cred.club/" },
+  { icon: "RZP", name: "Razorpay", text: "Razorpay - payments stack for Indian businesses", link: "https://razorpay.com/" },
+  { icon: "Z", name: "Zerodha", text: "Zerodha - invest and trade with Kite", link: "https://zerodha.com/" },
+  { icon: "P", name: "Postman", text: "Postman - build and test APIs faster", link: "https://www.postman.com/" },
+  { icon: "BS", name: "BrowserStack", text: "BrowserStack - test on real browsers and devices", link: "https://www.browserstack.com/" },
+  { icon: "FW", name: "Freshworks", text: "Freshworks - customer support and CRM software", link: "https://www.freshworks.com/" },
+  { icon: "ZHO", name: "Zoho", text: "Zoho - software suite for growing teams", link: "https://www.zoho.com/" },
+  { icon: "S", name: "Swiggy", text: "Swiggy - food, Instamart, and more", link: "https://www.swiggy.com/" },
+  { icon: "F", name: "Flipkart", text: "Flipkart - shop online across India", link: "https://www.flipkart.com/" }
 ];
 
 const PLEDGES_KEY = "pledges:v1";
 const STARTER_MS = 60 * 1000;
 const MAX_PLEDGES = 100;
+// TODO: Replace no-money pledge amounts with real billing, invoices, and payout reconciliation.
 
 // Counters live in KV (binding TOPBID) so points + views survive restarts and
 // cold starts. If the binding is missing (local dev before `wrangler kv ...`),
@@ -101,6 +102,7 @@ function cleanUrl(value) {
 
 function pledgeToLink(p) {
   return {
+    icon: p.icon,
     name: p.name,
     text: p.text,
     link: p.link,
@@ -148,7 +150,7 @@ export default {
       const pledgeLinks = pledges.map(pledgeToLink);
       const pool = Date.now() - firstSeen >= STARTER_MS ? pledgeLinks.concat(LINKS) : LINKS;
       const idx = Math.floor(Date.now() / 1000) % pool.length;
-      const { name, text, link } = pool[idx];
+      const { icon, name, text, link } = pool[idx];
       // Persist the impression + per-link view without blocking the response.
       const work = Promise.all([
         incrCount(env, "imp:" + key, memImpressions),
@@ -157,7 +159,7 @@ export default {
       const persist = work.catch(() => {}); // best-effort; a failed KV write just drops the count
       if (ctx && ctx.waitUntil) ctx.waitUntil(persist);
       else await persist;
-      return json({ copy: text, name, link });
+      return json({ icon, copy: text, name, link });
     }
 
     if (path === "/market") {
@@ -183,12 +185,14 @@ export default {
       }
       const name = cleanText(body.name || body.advertiser, 60);
       const text = cleanText(body.text || body.copy || body.message, 90);
+      const icon = cleanText(body.icon || name.slice(0, 2), 4).toUpperCase();
       const pledge = Math.max(0, Math.round(Number(body.pledge || body.donation || body.amount || 0)));
       if (!name) return json({ error: "name required" }, 400);
       if (!text) return json({ error: "message required" }, 400);
       if (!pledge) return json({ error: "future donation amount required" }, 400);
       const item = {
         id: "pledge-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
+        icon,
         name,
         text,
         link,

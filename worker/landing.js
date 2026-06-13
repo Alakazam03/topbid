@@ -333,6 +333,9 @@ export const LANDING_HTML = `<!DOCTYPE html>
         <label>Name
           <input id="pledgeName" name="name" maxlength="60" placeholder="Your name or project" required />
         </label>
+        <label>Symbol
+          <input id="pledgeIcon" name="icon" maxlength="4" placeholder="ACME" />
+        </label>
         <label>Future donation
           <input id="pledgeAmount" name="pledge" type="number" min="1" step="1" placeholder="25" required />
         </label>
@@ -395,7 +398,8 @@ export const LANDING_HTML = `<!DOCTYPE html>
       else {
         var rows=items.map(function(it){
           var stat=it.pledged ? ('$'+Number(it.pledge||0).toLocaleString()+' pledged') : ((it.views||0).toLocaleString()+' views');
-          return '<div class="feature-row"><span class="fn">'+esc(it.name)+'</span>'+
+          var label=(it.icon ? '['+esc(it.icon)+'] ' : '')+esc(it.name);
+          return '<div class="feature-row"><span class="fn">'+label+'</span>'+
                  '<span class="ft">'+esc(it.text)+'</span>'+
                  '<span class="fv">'+stat+'</span>'+
                  '<a class="fl" href="'+encodeURI(it.link)+'" target="_blank" rel="noopener">'+esc(host(it.link))+' ↗</a></div>';
@@ -448,6 +452,7 @@ export const LANDING_HTML = `<!DOCTYPE html>
         headers:{'content-type':'application/json'},
         body:JSON.stringify({
           name:val('pledgeName'),
+          icon:val('pledgeIcon'),
           link:val('pledgeLink'),
           text:val('pledgeText'),
           pledge:val('pledgeAmount')

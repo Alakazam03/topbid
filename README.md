@@ -87,6 +87,10 @@ curl -X POST "$TOPBID_ENDPOINT/admin/market/delete?id=some-link-id&token=$ADMIN_
 - The ad endpoint is open. This isn't settlement-grade: KV is eventually consistent, and an attacker can rotate keys. Payouts stay manual during beta while fraud controls are still simple.
 - The supported MVP uses `statusLine`. Replacing Claude's dynamic thinking indicator is an experimental TODO because local Claude Code is a bundled native app, so patching that UI is version-specific and fragile.
 
+## Experimental thinking indicator path
+
+`experimental/topbid-claude-thinking.sh` is an opt-in wrapper that runs Claude and a small dynamic TopBid ticker at the same time. It does not patch Claude's internal thinking emoji because the installed Claude Code binary does not expose a stable spinner string to replace.
+
 ## Uninstall
 
 ```
